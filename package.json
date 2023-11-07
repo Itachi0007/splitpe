@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "mongoose-currency": "^0.2.0"
+  }
+}
