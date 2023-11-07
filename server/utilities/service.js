@@ -35,7 +35,12 @@ function authenticateToken(req, res, next) {
 	});
 }
 
+function generateOTP() {
+	return Math.floor(100000 + Math.random() * 900000);
+}
+
 module.exports = {
 	response,
 	authenticateToken,
+	generateOTP,
 };

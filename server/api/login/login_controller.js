@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+const twilio = require("twilio");
+const redis = require("redis");
 
 const profile = require("../../models/profile_model").profileModel;
 const group = require("../../models/group_model").groupModel;
@@ -8,13 +10,18 @@ const group = require("../../models/group_model").groupModel;
 const service = require("../../utilities/service");
 const constants = require("../../utilities/constants");
 const config = require("../../config/config");
-
 const response = service.response;
+
+// Create a Twilio client instance with your Twilio credentials
+const twilioClient = twilio("YOUR_TWILIO_ACCOUNT_SID", "YOUR_TWILIO_AUTH_TOKEN");
+// Create a Redis client instance
+const redisClient = redis.createClient();
+var refreshTokens = [];
 
 exports.login = async (req, res) => {
 	try {
-		const phone = req.body.phone;
-		const otp = req.body.otp;
+		const phoneNumber = req.body.phone;
+		const userOTP = req.body.otp;
 
 		const user = await profile.findOne({phone: phone});
 		if (user == null) {
@@ -24,22 +31,47 @@ exports.login = async (req, res) => {
 			return res.status(400).send(dict);
 		}
 
-		// we will use OTP auth on phone
-		if (otp == sent_otp) {
-			const payload = {
-				name: user.name,
-			};
-			// generating access token
-			const accessToken = jwt.sign(payload, config.JWT_SECRET, {expiresIn: "15s"});
-			const refreshToken = jwt.sign(payload, config.JWT_REFRESH);
-			refreshTokens.push(refreshToken);
-			res.json({accessToken: accessToken, refreshToken: refreshToken});
-		} else {
-			var message = "Incorrect OTP";
-			console.log(message);
-			var dict = response(req, constants.resultFailure, [], message);
-			return res.status(401).send(dict);
-		}
+		const otp = service.generateOTP();
+		// Store the OTP in Redis with a 5-minute expiration
+		redisClient.setex(phoneNumber, 300, otp);
+
+		// Send the OTP via Twilio
+		twilioClient.messages
+			.create({
+				body: `Your OTP is: ${otp}`,
+				from: "YOUR_TWILIO_PHONE_NUMBER",
+				to: phoneNumber,
+			})
+			.then(() => {
+				console.log("OTP Sent successfully");
+				// Retrieve the stored OTP from Redis
+				redisClient.get(phoneNumber, (err, storedOTP) => {
+					if (err || userOTP !== storedOTP) {
+						var message = "Incorrect OTP";
+						console.log(message);
+						var dict = response(req, constants.resultFailure, [], message);
+						return res.status(401).send(dict);
+					} else {
+						// Successful OTP verification
+						var message = "OTP Verified successfully";
+						console.log(message);
+						// generating access token
+						const accessToken = jwt.sign(payload, config.JWT_SECRET, {expiresIn: "1500s"});
+						const refreshToken = jwt.sign(payload, config.JWT_REFRESH);
+						// need to store refresh token somewhere ----->
+						refreshTokens.push(refreshToken);
+						const payload = {
+							accessToken: accessToken,
+							refreshToken: refreshToken,
+						};
+						var dict = response(req, constants.resultSuccess, [payload], message);
+						return res.status(401).send(dict);
+					}
+				});
+			})
+			.catch((err) => {
+				res.status(500).json({error: "Failed to send OTP"});
+			});
 	} catch (err) {
 		console.log(err.message);
 		var message = constants.internalError;
@@ -64,14 +96,33 @@ exports.signup = async (req, res) => {
 
 exports.refToken = async (req, res) => {
 	const refreshToken = req.body.token; // using the refresh token to generate new access token
-	if (refreshToken == null) return res.status(401).send("Please pass a refresh token");
+	if (refreshToken == null) {
+		var message = "Please pass REFRESH TOKEN";
+		console.log(message);
+		var dict = response(req, constants.resultSuccess, [], message);
+		return res.status(400).send(dict);
+	}
 
-	if (!refreshTokens.includes(refreshToken)) return res.status(403).send("Invalid refresh token");
+	if (!refreshTokens.includes(refreshToken)) {
+		var message = "Invalid REFRESH TOKEN";
+		console.log(message);
+		var dict = response(req, constants.resultFailure, [], message);
+		return res.status(401).send(dict);
+	}
 
 	jwt.verify(refreshToken, process.env.REFRESH_TOKEN, (err, user) => {
-		if (err) return res.status(403).send("Token couldn't be verified");
-		const accessToken = jwt.sign({name: user.name}, config.JWT_SECRET, {expiresIn: "30s"}); // payload must not have all details
-		res.json({accessToken: accessToken});
+		if (err) {
+			var message = "REFRESH TOKEN could not be verified";
+			console.log(message);
+			var dict = response(req, constants.resultFailure, [], message);
+			return res.status(500).send(dict);
+		}
+
+		var message = "REFRESH TOKEN verified";
+		console.log(message);
+		const accessToken = jwt.sign({name: user.name}, config.JWT_SECRET, {expiresIn: "1500s"}); // payload must not have all details
+		var dict = response(req, constants.resultSuccess, [{accessToken: accessToken}], message);
+		return res.status(500).send(dict);
 	});
 };
 
