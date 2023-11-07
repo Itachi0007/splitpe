@@ -18,7 +18,6 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # Runtime data
 pids
-*.pid
 *.seed
 *.pid.lock
 
@@ -45,8 +44,8 @@ bower_components
 build/Release
 
 # Dependency directories
-node_modules/
 jspm_packages/
+node_modules/
 
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/

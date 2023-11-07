@@ -1,21 +1,60 @@
 const mongoose = require("mongoose");
+const mongooseCurrency = require("mongoose-currency");
 
 const ExpenseSchema = new mongoose.Schema(
 	{
-		name: {type: String, required: true},
-		type: {type: String, enum: ["breakfast", "lunch", "dinner", "snacks"], default: "dinner"},
-		tags: [{type: String, default: ""}], // to be used in searching like baigan etc
+		description: {type: String, required: true},
 		category: {
 			type: String,
-			enum: ["appetizer", "main_course", "dessert", "sweet"],
-			default: "main_course",
+			enum: ["entertainment", "dining", "home", "transport", "services", "other"],
+			default: "other",
 			required: true,
-		},
-		description: {type: String},
-		amount: {type: Number, required: true},
+		}, // we will filter using these
+		amount: {type: Number, required: true}, // all payer shared sum must be equal to amount
+		currency: {type: mongooseCurrency.Currency},
 		isGroup: {type: Boolean, required: true, default: false},
 		groupId: {type: String, ref: "Group"},
 		createdBy: {type: String, ref: "profile"},
+		payers: [
+			{
+				user: {type: String, ref: "Profile"},
+				share: {type: Number}, // should add up to amount
+			},
+		],
+		payees: [
+			{
+				user: {type: String, ref: "Profile"},
+				share: {type: Number},
+			},
+		],
+		type: {
+			type: String,
+			enum: [
+				"movies",
+				"sports",
+				"groceries",
+				"dine_out",
+				"liquor",
+				"rent",
+				"household_supplies",
+				"furniture",
+				"maintenance",
+				"pets",
+				"electronics",
+				"clothing",
+				"gifts",
+				"medical",
+				"education",
+				"parking",
+				"bus_train",
+				"fuel",
+				"cab",
+				"plane",
+				"hotel",
+				"cleaning",
+			],
+			default: "dinner",
+		},
 	},
 	{timestamps: true}
 );
