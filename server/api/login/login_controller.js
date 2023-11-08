@@ -53,19 +53,19 @@ exports.login = async (req, res) => {
 						return res.status(401).send(dict);
 					} else {
 						// Successful OTP verification
-						var message = "OTP Verified successfully";
+						var message = "Logged in successfully";
 						console.log(message);
 						// generating access token
 						const accessToken = jwt.sign(payload, config.JWT_SECRET, {expiresIn: "1500s"});
 						const refreshToken = jwt.sign(payload, config.JWT_REFRESH);
-						// need to store refresh token somewhere ----->
+						// need to store refresh token somewhere --------->
 						refreshTokens.push(refreshToken);
 						const payload = {
 							accessToken: accessToken,
 							refreshToken: refreshToken,
 						};
 						var dict = response(req, constants.resultSuccess, [payload], message);
-						return res.status(401).send(dict);
+						return res.status(200).send(dict);
 					}
 				});
 			})
