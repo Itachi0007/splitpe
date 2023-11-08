@@ -18,6 +18,8 @@
     "http": "^0.0.1-security",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.0",
+    "mongoose-currency": "^0.2.0",
+    "nodemon": "^3.0.1",
     "path": "^0.12.7",
     "redis": "^4.6.10",
     "twilio": "^4.19.0"

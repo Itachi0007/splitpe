@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const mongooseCurrency = require("mongoose-currency");
+require('mongoose-currency').loadType(mongoose);
 
 const ExpenseSchema = new mongoose.Schema(
 	{
@@ -11,7 +11,7 @@ const ExpenseSchema = new mongoose.Schema(
 			required: true,
 		}, // we will filter using these
 		amount: {type: Number, required: true}, // all payer shared sum must be equal to amount
-		currency: {type: mongooseCurrency.Currency},
+		currency: {type: mongoose.Types.Currency},
 		isGroup: {type: Boolean, required: true, default: false},
 		groupId: {type: String, ref: "Group"},
 		createdBy: {type: String, ref: "profile"},
