@@ -12,7 +12,7 @@ module.exports = {
 	razorpayId: process.env.razorpaytest_id,
 	razorpaySecret: process.env.razorpaytest_secret,
 	googleAuth: {
-		clientId : "290695009226-ba6uuj8rt221bj9i0bei0d90qj2ee5jo.apps.googleusercontent.com",
-		clientSecret : "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"
+		clientId : "",
+		clientSecret : ""
 	}
 };
