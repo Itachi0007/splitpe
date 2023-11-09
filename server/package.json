@@ -20,6 +20,10 @@
     "mongoose": "^8.0.0",
     "mongoose-currency": "^0.2.0",
     "nodemon": "^3.0.1",
+    "passport": "^0.6.0",
+    "passport-google-oauth": "^2.0.0",
+    "passport-google-oauth2": "^0.2.0",
+    "passport-jwt": "^4.0.1",
     "path": "^0.12.7",
     "redis": "^4.6.10",
     "twilio": "^4.19.0"

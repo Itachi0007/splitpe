@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 var profileSchema = new mongoose.Schema(
 	{
 		name: {type: String},
+		googleId: { type: String },
 		phone: {type: String, default: "", required: true},
 		email: {type: String, required: true},
 		password: {type: String, required: true, min: 6},
