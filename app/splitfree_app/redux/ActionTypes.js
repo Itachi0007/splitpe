@@ -1,0 +1,17 @@
+export const DEMO_DONE = 'DEMO_DONE';
+export const ADD_RECENT = 'ADD_RECENT';
+export const LOGGING_IN = 'LOGGING_IN';
+export const LOGGING_OUT = 'LOGGING_OUT';
+export const SET_USER_TYPE = 'SET_USER_TYPE';
+export const PROFILE_STATUS = 'PROFILE_STATUS';
+export const ADD_FAVOURITE = 'ADD_FAVOURITE';
+export const REMOVE_FAVOURITE = 'REMOVE_FAVOURITE';
+export const UPDATE_PROFILE = 'UPDATE_PROFILE';
+export const CHANGE_ITEM = 'CHANGE_ITEM';
+export const SHOW_INSTRUMENTS = 'SHOW_INSTRUMENTS';
+export const SET_ITEMS = 'SET_ITEMS';
+export const SIGNIN = 'SIGNIN';
+export const SIGNOUT = 'SIGNOUT';
+export const REGISTER = 'REGISTER';
+export const SET_THEME = 'SET_THEME';
+export const SET_SCHOOL = 'SET_SCHOOL';
