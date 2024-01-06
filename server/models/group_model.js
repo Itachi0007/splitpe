@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-require('mongoose-currency').loadType(mongoose);
 
 var groupSchema = new mongoose.Schema(
 	{
@@ -7,7 +6,7 @@ var groupSchema = new mongoose.Schema(
 		members: [{type: String, ref: "Profile"}],
 		imageUrl: {type: String, trim: true, default: ""},
 		createdBy: {type: String, ref: "Profile"},
-		currency: {type: mongoose.Types.Currency}, // default currency to be used in the group
+		currency: {type: String, enum: ["INR", "USD"]}, // default currency to be used in the group
 	},
 	{timestamps: true}
 );

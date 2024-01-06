@@ -1,20 +1,15 @@
 const mongoose = require("mongoose");
-require('mongoose-currency').loadType(mongoose);
 
 const ExpenseSchema = new mongoose.Schema(
 	{
-		description: {type: String, required: true},
-		category: {
-			type: String,
-			enum: ["entertainment", "dining", "home", "transport", "services", "other"],
-			default: "other",
-			required: true,
-		}, // we will filter using these
+		title: {type: String, required: true},
+		description: {type: String},
 		amount: {type: Number, required: true}, // all payer shared sum must be equal to amount
-		currency: {type: mongoose.Types.Currency},
-		isGroup: {type: Boolean, required: true, default: false},
+		currency: {type: String, enum: ["INR", "USD"]},
+		isGroup: {type: Boolean, required: true},
 		groupId: {type: String, ref: "Group"},
 		createdBy: {type: String, ref: "profile"},
+		repeat: {type: String, enum: ["NEVER", "DAILY", "WEEKLY", "MONTHLY", "YEARLY"], default: "NEVER"},
 		payers: [
 			{
 				user: {type: String, ref: "Profile"},
@@ -27,7 +22,8 @@ const ExpenseSchema = new mongoose.Schema(
 				share: {type: Number},
 			},
 		],
-		type: {
+		category: {
+			// we will filter using these
 			type: String,
 			enum: [
 				"movies",
@@ -49,11 +45,12 @@ const ExpenseSchema = new mongoose.Schema(
 				"bus_train",
 				"fuel",
 				"cab",
-				"plane",
+				"flights",
 				"hotel",
 				"cleaning",
 			],
-			default: "dinner",
+			default: "other",
+			required: true,
 		},
 	},
 	{timestamps: true}
