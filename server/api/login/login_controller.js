@@ -11,7 +11,7 @@ const service = require("../../utilities/service");
 const constants = require("../../utilities/constants");
 const config = require("../../config/config");
 const response = service.response;
-const passport = require("passport")
+const passport = require("passport");
 // Create a Twilio client instance with your Twilio credentials
 // const twilioClient = twilio("YOUR_TWILIO_ACCOUNT_SID", "YOUR_TWILIO_AUTH_TOKEN");
 // Create a Redis client instance
@@ -82,9 +82,11 @@ var refreshTokens = [];
 
 exports.signup = async (req, res) => {
 	try {
+		const newProfile = await profile.create(req.body);
+
 		console.log("Signed up successfully");
 		var message = "Signed up successfully";
-		var dict = response(req, constants.resultSuccess, [], message);
+		var dict = response(req, constants.resultSuccess, [newProfile], message);
 		return res.status(200).send(dict);
 	} catch (err) {
 		console.log(err.message);
@@ -132,21 +134,20 @@ exports.logout = async (req, res) => {
 	return res.status(200).send("Logged out successfully");
 };
 
-
 exports.googleLogin = async (req, res) => {
-	passport.authenticate('google',{scope:['profile']});
-	console.log("Google Sign In Route");	
-}
+	passport.authenticate("google", {scope: ["profile"]});
+	console.log("Google Sign In Route");
+};
 
 exports.googleFailedLogin = async (req, res) => {
 	console.log("Google Sign In Failed");
-	return res.status(200).send("Google Sign In Failed") ;
-}
+	return res.status(200).send("Google Sign In Failed");
+};
 exports.googleProtected = async (req, res) => {
 	console.log("Google Protected Route");
-	return res.status(200).send("Google Sign In Passed. You are in protected Route") ;
-}
+	return res.status(200).send("Google Sign In Passed. You are in protected Route");
+};
 
 exports.googleCallback = async (req, res) => {
-	passport.authenticate("google", {failureRedirect: "/google/failedlogin",successRedirect:"/google/protected"});	  	 
-}
+	passport.authenticate("google", {failureRedirect: "/google/failedlogin", successRedirect: "/google/protected"});
+};

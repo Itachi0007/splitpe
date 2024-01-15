@@ -1,5 +1,6 @@
 const config = require("../config/config");
 const jwt = require("jsonwebtoken");
+const profile = require("../models/profile_model").profileModel;
 
 var constants = require("./constants");
 
@@ -39,8 +40,20 @@ function generateOTP() {
 	return Math.floor(100000 + Math.random() * 900000);
 }
 
+const validateUsers = async (users) => {
+	for (const user of users) {
+		const existingUser = await profile.findById(user);
+		if (!existingUser) {
+			return user;
+		}
+	}
+	console.log(users);
+	return true;
+};
+
 module.exports = {
 	response,
 	authenticateToken,
 	generateOTP,
+	validateUsers,
 };

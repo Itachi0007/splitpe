@@ -11,13 +11,13 @@ const response = service.response;
 
 exports.myGroups = async function (req, res) {
 	try {
-		const userId = req.body.userId;
+		const userId = req.query.profileId;
 
-		var groupList = await group.find({members: {$in: [userId]}});
+		const userData = await profile.findById(userId).populate("myGroups.groupId");
 
 		var message = "Groups fetched successfully";
 		console.log(message);
-		var dict = service.response(req, constants.resultSuccess, [homeData], message);
+		var dict = service.response(req, constants.resultSuccess, [userData], message);
 		return res.status(200).send(dict);
 	} catch (err) {
 		console.log(err.message);
@@ -74,6 +74,40 @@ exports.groupbalance = async function (req, res) {
 		console.log(err.message);
 		var message = constants.internalError;
 		var dict = response(req, constants.resultFailure, [], message);
+		return res.status(500).send(dict);
+	}
+};
+
+exports.newGroup = async function (req, res) {
+	try {
+		console.log("reaching req");
+		// Basic validation for required fields
+		if (!req.body.name || !req.body.members || !req.body.createdBy || !req.body.currency) {
+			var message = "Missing required information";
+			console.log(message);
+			var dict = response(req, constants.resultFailure, [message], message);
+			return res.status(400).send(dict);
+		}
+
+		// Validate currency against the enum values
+		const validCurrencies = ["INR", "USD"];
+		if (!validCurrencies.includes(req.body.currency)) {
+			var message = "Invalid currency selected";
+			console.log(message);
+			var dict = response(req, constants.resultFailure, [message], message);
+			return res.status(400).send(dict);
+		}
+
+		// Create a new group
+		const newGroup = await group.create(req.body);
+		var message = "Group created successfully";
+		console.log(message);
+		var dict = response(req, constants.resultSuccess, [newGroup], message);
+		return res.status(200).send(dict);
+	} catch (err) {
+		console.log(err.message);
+		var message = err.message;
+		var dict = response(req, constants.resultFailure, [message], message);
 		return res.status(500).send(dict);
 	}
 };

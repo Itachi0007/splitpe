@@ -10,16 +10,11 @@ const ExpenseSchema = new mongoose.Schema(
 		groupId: {type: String, ref: "Group"},
 		createdBy: {type: String, ref: "profile"},
 		repeat: {type: String, enum: ["NEVER", "DAILY", "WEEKLY", "MONTHLY", "YEARLY"], default: "NEVER"},
-		payers: [
+		users: [
 			{
-				user: {type: String, ref: "Profile"},
-				share: {type: Number}, // should add up to amount
-			},
-		],
-		payees: [
-			{
-				user: {type: String, ref: "Profile"},
-				share: {type: Number},
+				id: {type: String, ref: "Profile"},
+				paid: {type: Number}, // should add up to amount
+				owes: {type: Number}, // should add up to amount
 			},
 		],
 		category: {

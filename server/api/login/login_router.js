@@ -4,7 +4,7 @@ const loginController = require("./login_controller");
 // require("../../config/passport");
 
 // router.post("/login", loginController.login);
-// router.post("/signup", authenticateToken, loginController.signup);
+router.post("/signup", loginController.signup);
 // router.get("/login/google/",loginController.googleLogin);
 // router.get("/login/google/failedlogin",loginController.googleFailedLogin);
 // router.get("/login/google/callback",loginController.googleCallback);
