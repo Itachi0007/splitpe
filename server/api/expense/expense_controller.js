@@ -140,6 +140,7 @@ exports.addnew = async (req, res) => {
 			users,
 			category,
 			repeat,
+			statements: expenseStatement,
 		});
 		const savedExpense = await newExpense.save();
 
@@ -204,6 +205,28 @@ exports.update = async (req, res) => {
 		var message = "Expense updated successfully";
 		console.log(message);
 		var dict = response(req, constants.resultSuccess, [updatedExpense], message);
+		return res.status(200).send(dict);
+	} catch (error) {
+		console.log(err.message);
+		var message = err.message;
+		var dict = response(req, constants.resultFailure, [], message);
+		return res.status(500).send(dict);
+	}
+};
+
+exports.get = async (req, res) => {
+	try {
+		const expenseData = await expense.findById(req.params.id);
+		if (!expenseData) {
+			var message = "Invalid expense ID";
+			console.log(message);
+			var dict = response(req, constants.resultSuccess, [], message);
+			return res.status(400).send(dict);
+		}
+
+		var message = "Expense fetched successfully";
+		console.log(message);
+		var dict = response(req, constants.resultSuccess, [expenseData], message);
 		return res.status(200).send(dict);
 	} catch (error) {
 		console.log(err.message);

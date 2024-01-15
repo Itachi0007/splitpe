@@ -8,7 +8,7 @@ const ExpenseSchema = new mongoose.Schema(
 		currency: {type: String, enum: ["INR", "USD"]},
 		isGroup: {type: Boolean, required: true},
 		groupId: {type: String, ref: "Group"},
-		createdBy: {type: String, ref: "profile"},
+		createdBy: {type: String, ref: "Profile"},
 		repeat: {type: String, enum: ["NEVER", "DAILY", "WEEKLY", "MONTHLY", "YEARLY"], default: "NEVER"},
 		users: [
 			{
@@ -47,6 +47,13 @@ const ExpenseSchema = new mongoose.Schema(
 			default: "other",
 			required: true,
 		},
+		statements: [
+			{
+				debtor: {type: String, ref: "Profile"},
+				creditor: {type: String, ref: "Profile"},
+				balance: {type: Number},
+			},
+		],
 	},
 	{timestamps: true}
 );
