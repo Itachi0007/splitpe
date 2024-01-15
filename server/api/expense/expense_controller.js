@@ -176,6 +176,43 @@ exports.delete = async (req, res) => {
 	}
 };
 
+exports.update = async (req, res) => {
+	try {
+		const expenseData = await expense.findById(req.params.id);
+
+		if (!expenseData) {
+			var message = "Invalid expense ID";
+			console.log(message);
+			var dict = response(req, constants.resultSuccess, [], message);
+			return res.status(400).send(dict);
+		}
+
+		// Update fields based on the request body
+		expenseData.title = req.body.title || expenseData.title;
+		expenseData.description = req.body.description || expenseData.description;
+		expenseData.amount = req.body.amount || expenseData.amount;
+		expenseData.currency = req.body.currency || expenseData.currency;
+		expenseData.repeat = req.body.repeat || expenseData.repeat;
+		expenseData.users = req.body.users || expenseData.users;
+		expenseData.category = req.body.category || expenseData.category;
+
+		// Save the updated expense
+		const updatedExpense = await expenseData.save();
+
+		// NEED TO REVERT ALL OTHER ENTITIES BALANCES ETC....
+
+		var message = "Expense updated successfully";
+		console.log(message);
+		var dict = response(req, constants.resultSuccess, [updatedExpense], message);
+		return res.status(200).send(dict);
+	} catch (error) {
+		console.log(err.message);
+		var message = err.message;
+		var dict = response(req, constants.resultFailure, [], message);
+		return res.status(500).send(dict);
+	}
+};
+
 function computeStatements(shares) {
 	// Create a map to track balances for each person
 	let balances = new Map();
