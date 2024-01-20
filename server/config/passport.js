@@ -6,7 +6,7 @@ const profileModel = require("../models/profile_model").profileModel;
 passport.use(new GoogleStrategy({
     clientID: config.googleAuth.clientId,
     clientSecret: config.googleAuth.clientSecret,
-    callbackURL: "http://localhost:3000/google/callback"
+    callbackURL: "http://localhost:3000/auth/google/callback"
   },
   function(accessToken, refreshToken, profile, cb) {
     console.log(accessToken , profile) ;

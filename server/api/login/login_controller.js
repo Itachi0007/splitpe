@@ -10,6 +10,7 @@ const group = require("../../models/group_model").groupModel;
 const service = require("../../utilities/service");
 const constants = require("../../utilities/constants");
 const config = require("../../config/config");
+const passportJSconfig = require('../../config/passport');
 const response = service.response;
 const passport = require("passport");
 // Create a Twilio client instance with your Twilio credentials
@@ -135,7 +136,7 @@ exports.logout = async (req, res) => {
 };
 
 exports.googleLogin = async (req, res) => {
-	passport.authenticate("google", {scope: ["profile"]});
+	passport.authenticate("google", {scope: ["profile" , "email"]});
 	console.log("Google Sign In Route");
 };
 

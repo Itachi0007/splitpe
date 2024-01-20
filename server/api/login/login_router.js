@@ -5,9 +5,9 @@ const loginController = require("./login_controller");
 
 // router.post("/login", loginController.login);
 router.post("/signup", loginController.signup);
-// router.get("/login/google/",loginController.googleLogin);
-// router.get("/login/google/failedlogin",loginController.googleFailedLogin);
-// router.get("/login/google/callback",loginController.googleCallback);
-// router.get("/login/google/protected",loginController.googleProtected);
+router.get("/login/google/",loginController.googleLogin);
+router.get("/login/google/failedlogin",loginController.googleFailedLogin);
+router.get("/login/google/callback",loginController.googleCallback);
+router.get("/login/google/protected",loginController.googleProtected);
 
 exports = module.exports = router;
